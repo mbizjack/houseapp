@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+<script>
+{% block jquery %}
+
+$(function() {
+	Highcharts.chart('chart', {
+		
+		title: {
+		    text: '{{ stateChoice }} between {{ yearlower }} and {{ yearupper }}'
+		},
+
+		xAxis: {
+			minPadding: 0.05,
+			maxPadding: 0.05
+		},
+
+		series: [{
+			name: "HPI",
+			data: [
+			{% for item in stateQuery %}
+			    [{{ item.year }}+
+			    (({{ item.qtr }}*.25)-.125),
+			    	{{ item.hpi }}],
+			{% endfor %}
+			]
+		}],
+
+		yAxis: {
+			label: ""
+		},
+
+	});
+})
+{% endblock %}
+</script>
+
+{% block content %}
+
+<h1>House Price Index Plotter</h1>
+
+<div class='row'>
+	<form method=post action="">{% csrf_token %}
+		{{ form }}
+		<input type=submit value=Plot>
+	</form>
+</div>
+
+{% if stateQuery != None %}
+
+	<div id="chart" style="width:100%; height:400px;"></div>
+
+	<table class="table">
+		<tr>
+			<th>Year</th>
+			<th>Quarter</th>
+			<th>HPI</th>
+		</tr>
+		{% for item in stateQuery %}
+			<tr>
+				<td>{{item.year}}</td>
+				<td>{{item.qtr}}</td>
+				<td>{{item.hpi}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+
+{% endif %}
+
+
+{% endblock content %}

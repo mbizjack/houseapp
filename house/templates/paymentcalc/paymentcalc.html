@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class = "row">
+	<h1>Payment Calculator</h1>
+	<p>
+		<form method=post action="">{% csrf_token %}
+			<table class="table">
+				<tr>
+					<th>Variable</th>
+					<th>Input</th>
+					<th>Description (unit)</th>
+				</tr>
+				{% for field in form %}
+				<tr>
+					<td>{{ field.name }}</td>
+					<td>{{ field }}</td>
+					<td>{{ field.label }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			<p>
+				<input type=submit value=Compute>
+			</p>
+		</form>
+	</p>
+</div>
+
+<div class="row">
+	<p>
+		{% if result != None %}
+			<h2>A loan of ${{ principalInput }} over a term of {{ termInput }} years at an annual percentage rate of {{ aprInput }}% results in a monthly payment of 
+				<strong style="color:red;">${{ result }}</strong>.
+			</h2>
+		{% endif %}
+	</p>
+</div>
+{% endblock content %}
