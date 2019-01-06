@@ -3,6 +3,33 @@
 <script>
 {% block jquery %}
 
+
+$( function() {
+	$( "#slider-range" ).slider({
+		range: true,
+		min: 1975,
+		max: 2018,
+		values: [ 1975, 2018 ],
+		slide: function( event, ui ) {
+			$( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+		},
+		change: function( event, ui ) {
+			var sliderRange = ui.value;
+			$.ajax({ 
+				type: "POST",
+				data: "sliderRange=" + sliderRange,
+				cache: false,
+				success: function(data) {
+					$("body").html(data);
+				}
+			});
+		}
+	});
+	$( "#amount" ).val( $( "#slider-range" ).slider( "values", 0 ) +
+	" - " + $( "#slider-range" ).slider( "values", 1 ) );
+});
+
+
 $(function() {
 	Highcharts.chart('chart', {
 		
@@ -32,6 +59,7 @@ $(function() {
 
 	});
 })
+
 {% endblock %}
 </script>
 
@@ -39,14 +67,32 @@ $(function() {
 
 <h1>House Price Index Plotter</h1>
 
+
+<form method=post action="">{% csrf_token %}
+
+</form>
+
+
 <div class='row'>
 	<form method=post action="">{% csrf_token %}
-		{{ form }}
+		
+		{{ form.as_p }}
+
+<!-- 	Slider widget failure
+		<p>
+			<label for="amount">Year range:</label>
+			<input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+			<div id="slider-range"></div>
+		</p> -->
+
 		<input type=submit value=Plot>
+
 	</form>
 </div>
 
 {% if stateQuery != None %}
+
+{% if yearlower <= yearupper %}
 
 	<div id="chart" style="width:100%; height:400px;"></div>
 
@@ -64,6 +110,12 @@ $(function() {
 			</tr>
 		{% endfor %}
 	</table>
+
+{% else %}
+
+<p>In this timeline, {{yearlower}} occurred after {{yearupper}}. Please adjust interval accordingly.</p>
+
+{% endif %}
 
 {% endif %}
 
