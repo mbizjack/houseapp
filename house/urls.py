@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
 	path('',HomeView.as_view(), name = "home"),
+    path('monthlycalc/', include('monthlycalc.urls')),
     path('HPIplot/', include('HPIplot.urls')),
     path('paymentcalc/', include('paymentcalc.urls')),
     path('admin/', admin.site.urls),

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+<script>
+{% block jquery %}
+$(function() {
+	Highcharts.chart('chart', {
+		
+		title: {
+		    text: 'Loan Repayment'
+		},
+
+		xAxis: {
+			minPadding: 0.05,
+			maxPadding: 0.05
+		},
+
+		series: [{
+			name: "Loan Remaining",
+			data: [
+			{% for row in tableOut %}
+				[{{row}}[0],
+				{{row}}[2]],
+			{% endfor %}
+			]
+		},
+
+		{
+			name: "Equity",
+			data: [
+			{% for row in tableOut %}
+				[{{row}}[0],
+				{{row}}[3]],
+			{% endfor %}
+			]
+		}],
+
+		yAxis: {
+			label: "Value"
+		},
+
+	});
+})
+
+{% endblock %}
+</script>
+
+{% block content %}
+<div class = "row">
+	<h1>Calculator</h1>
+	<p>
+		<form method=post action="">{% csrf_token %}
+			<table class="table">
+				<tr>
+					<th>Variable</th>
+					<th>Input</th>
+					<th>Description (unit)</th>
+				</tr>
+				{% for field in form %}
+				<tr>
+					<td>{{ field.name }}</td>
+					<td>{{ field }}</td>
+					<td>{{ field.label }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+			<p>
+				<input type=submit value=Compute>
+			</p>
+		</form>
+	</p>
+</div>
+
+{% if result != None %}
+
+	<div class="row">
+		<p>
+			<h2>A loan of ${{ principalInput }} over a term of {{ termInput }} years at an annual percentage rate of {{ aprInput }}% results in a monthly payment of 
+				<strong style="color:red;">${{ result }}</strong>.
+			</h2>
+		</p>
+	</div>
+
+	<div id="chart" style="width:100%; height:400px;"></div>
+
+	<h3>Amortization Table</h3>
+	<div class="row">
+		<table class="table">
+			<tr>
+				<th>Month</th>
+				<th>Year</th>
+				<th>Loan Remaining (beginning of month)</th>
+				<th>Equity</th>
+				<th>Interest Paid</th>
+				<th>Principal Paid</th>
+				<th>Loan Remaining (end of month)</th>
+			</tr>
+			{% for row in tableOut %}
+				<tr>
+					{% for col in row %}
+					<td> {{col}} </td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endif %}
+
+{% endblock content %}
