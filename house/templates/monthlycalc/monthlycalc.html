@@ -35,7 +35,14 @@ $(function() {
 		}],
 
 		yAxis: {
-			label: "Value"
+			title: {
+				text: "Value"
+			}
+		},
+		xAxis: {
+			title: {
+				text: "Month"
+			}
 		},
 
 	});
@@ -70,6 +77,7 @@ $(function() {
 	</p>
 </div>
 
+
 {% if result != None %}
 
 	<div class="row">
@@ -83,25 +91,64 @@ $(function() {
 	<div id="chart" style="width:100%; height:400px;"></div>
 
 	<h3>Amortization Table</h3>
-	<div class="row">
-		<table class="table">
-			<tr>
-				<th>Month</th>
-				<th>Year</th>
-				<th>Loan Remaining (beginning of month)</th>
-				<th>Equity</th>
-				<th>Interest Paid</th>
-				<th>Principal Paid</th>
-				<th>Loan Remaining (end of month)</th>
-			</tr>
-			{% for row in tableOut %}
-				<tr>
-					{% for col in row %}
-					<td> {{col}} </td>
-					{% endfor %}
-				</tr>
-			{% endfor %}
-		</table>
+	<div>
+
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active"><a href="#monthly" aria-controls="monthly" role="tab" data-toggle="tab">Monthly</a></li>
+			<li role="presentation"><a href="#annual" aria-controls="annual" role="tab" data-toggle="tab">Annual</a></li>
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="monthly">
+				<div class="row">
+					<table class="table">
+						<tr>
+							<th>Month</th>
+							<th>Year</th>
+							<th>Loan Remaining (beginning of month)</th>
+							<th>Equity</th>
+							<th>Interest Paid</th>
+							<th>Principal Paid</th>
+							<th>Loan Remaining (end of month)</th>
+							<th>Property Value</th>
+						</tr>
+						{% for row in tableOut %}
+							<tr>
+								{% for col in row %}
+									<td> {{col}} </td>
+								{% endfor %}
+							</tr>
+						{% endfor %}
+					</table>
+				</div>
+			</div>
+			<div role="tabpanel" class="tab-pane" id="annual">
+				<div class="row">
+					<table class="table">
+						<tr>
+							<th>Year</th>
+							<th>Loan Remaining (Year Start)</th>
+							<th>Interest Paid</th>
+							<th>Principal Paid</th>
+							<th>Loan Remaining (Year End)</th>
+							<th>Property Value</th>
+							<th>Property taxes paid</th>
+							<th>Federal tax deduction</th>
+						</tr>
+						{% for row in tableOutYr %}
+							<tr>
+								{% for col in row %}
+									<td> {{col}} </td>
+								{% endfor %}
+							</tr>
+						{% endfor %}
+					</table>
+				</div>
+			</div>
+		</div>
+
 	</div>
 {% endif %}
 

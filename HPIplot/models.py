@@ -23,6 +23,7 @@ class HPI_state(models.Model):
 	year = models.IntegerField('YEAR')
 	qtr = models.IntegerField('QTR')
 	hpi = models.DecimalField('HPI',decimal_places=4,max_digits=100)
+	cpi = models.DecimalField('CPI',decimal_places=4,max_digits=100,default=0.0)
 
 	def __float__(self):
 		x = self.state+str(self.year)+str(self.qtr)
@@ -38,10 +39,12 @@ class RangeInput(NumberInput):
 
 class RawHPIform(forms.Form):
 	state_choices = [(i['state'], i['state']) for i in HPI_state.objects.values('state').distinct()]
-	state = forms.ChoiceField(choices=state_choices)
+	state = forms.ChoiceField(choices=state_choices,initial="IL")
 	yearlower = forms.IntegerField(initial=1975,min_value=1975,max_value=2018)
 	# Slider widget failure
 	#,widget=RangeInput(attrs={'max':2018,'min':1975,'step':1}))
 	yearupper = forms.IntegerField(initial=2018,min_value=1975,max_value=2018)
 	#,widget=RangeInput(attrs={'max':2018,'min':1975,'step':1}))
-
+	principal = forms.FloatField(initial=250000.0)
+	term = forms.FloatField(initial=30.0)
+	apr = forms.FloatField(initial=4.25)

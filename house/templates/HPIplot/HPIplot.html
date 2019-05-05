@@ -43,18 +43,26 @@ $(function() {
 		},
 
 		series: [{
-			name: "HPI",
+			name: "Home value",
 			data: [
 			{% for item in stateQuery %}
 			    [{{ item.year }}+
 			    (({{ item.qtr }}*.25)-.125),
-			    	{{ item.hpi }}],
+			    	{{principal}}/{{startHPI}}*{{item.hpi}}],
 			{% endfor %}
 			]
 		}],
 
 		yAxis: {
-			label: ""
+			title: {
+				text: "Home Value"
+			}
+		},
+
+		xAxis: {
+			title: {
+				text: "Year"
+			}
 		},
 
 	});
@@ -85,6 +93,16 @@ $(function() {
 	</form>
 </div>
 
+<div class='row'>
+	{% if result != None %}
+		<h2>A loan of ${{ principalInput }} over a term of {{ termInput }} years at an annual percentage rate of {{ aprInput }}% results in a monthly payment of 
+			<strong style="color:red;">${{ result }}</strong>.
+		</h2>
+		<p>On average, a house in {{stateChoice}} worth ${{principalInput}} in Q1 {{yearlower}} would be worth ${{endValue}} in {{endYr}} (not adjusted for inflation).</p>
+		<p>In {{yearlower}} dollars, the house would be worth about ${{endValueCPI}}, resulting in a real return of {{returnPct}}% over {{termCalc}} years ({{returnPctAnnual}}% per year).</p>
+	{% endif %}
+</div>
+
 {% if stateQuery != None %}
 
 {% if yearlower <= yearupper %}
@@ -96,12 +114,14 @@ $(function() {
 			<th>Year</th>
 			<th>Quarter</th>
 			<th>HPI</th>
+			<th>CPI</th>
 		</tr>
 		{% for item in stateQuery %}
 			<tr>
 				<td>{{item.year}}</td>
 				<td>{{item.qtr}}</td>
 				<td>{{item.hpi}}</td>
+				<td>{{item.cpi}}</td>
 			</tr>
 		{% endfor %}
 	</table>

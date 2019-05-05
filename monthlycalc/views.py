@@ -14,6 +14,12 @@ def index(request):
     termMo = None
     principal = None
     tableOut = None
+    tableOutYr = None
+    output = None
+
+    state = "IL"
+    yearstart = 1980
+
     if request.method == 'POST':
         form = InputForm(request.POST)
         if form.is_valid():
@@ -23,7 +29,9 @@ def index(request):
             principal = form2.principal
             result = (aprPct/12)*principal/(1-((1+aprPct/12)**(-termMo)))
 
-            tableOut = amortization(principal,termMo,aprPct)
+            output = amortization(principal,termMo,aprPct,state,yearstart)
+            tableOut = output[0]
+            tableOutYr = output[1]
     else:
         form = InputForm()
 
@@ -34,4 +42,5 @@ def index(request):
              'aprInput': aprPct*100 if aprPct != None else aprPct,
              'termInput': termMo/12 if termMo != None else termMo,
              'tableOut': tableOut,
+             'tableOutYr':tableOutYr
              })
